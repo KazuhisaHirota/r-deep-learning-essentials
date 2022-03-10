@@ -23,3 +23,36 @@ MakeDataset <- function(data.size,
   
   return(list(x=x, t=t)) # NOTE return results with names
 }
+
+MakeDataset2 <- function(data.size,
+                         mu11, mu12, answer1, # answer1: vector
+                         mu21, mu22, answer2, # answer2: vector
+                         mu31, mu32, answer3  # answer3: vector
+                         ) {
+  
+  X <- matrix(0, nrow=data.size, ncol=2)
+  T <- matrix(0, nrow=data.size, ncol=3)
+  
+  one.class.size <- data.size / 3 # NOTE
+  
+  # class 1 data
+  for (i in 1:one.class.size) {
+    X[i, 1] <- rnorm(1) + mu11
+    X[i, 2] <- rnorm(1) + mu12
+    T[i, ] <- answer1
+  }
+  # class 2 data
+  for (i in (one.class.size + 1):(one.class.size * 2)) {
+    X[i, 1] <- rnorm(1) + mu21
+    X[i, 2] <- rnorm(1) + mu22
+    T[i, ] <- answer2
+  }
+  # class 3 data
+  for (i in (one.class.size * 2 + 1):data.size) {
+    X[i, 1] <- rnorm(1) + mu31
+    X[i, 2] <- rnorm(1) + mu32
+    T[i, ] <- answer3
+  }
+  
+  return(list(X=X, T=T))
+}
