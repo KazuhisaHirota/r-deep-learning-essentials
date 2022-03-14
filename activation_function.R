@@ -10,6 +10,18 @@ Sigmoid <- function(x) {
   return(1.0 / (1.0 + exp(-x)))
 }
 
+DSigmoid <- function(y) {
+  return(y * (1.0 - y))
+}
+
+Tanh <- function(x) {
+  return(tanh(x))
+}
+
+DTanh <- function(y) {
+  return(1.0 - y * y)
+}
+
 Softmax <- function(x) {
   n <- length(x)
   y <- numeric(n)
