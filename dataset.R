@@ -56,3 +56,40 @@ MakeDataset2 <- function(data.size,
   
   return(list(X=X, T=T))
 }
+
+MakeXORDataset <- function() {
+  #X = np.array([
+  #  [0., 0.],
+  #  [0., 1.],
+  #  [1., 0.],
+  #  [1., 1.]
+  #])
+  X <- rbind(
+    c(0., 0.),
+    c(0., 1.),
+    c(1., 0.),
+    c(1., 1.)
+  )
+  
+  #T = np.array([
+  #  [0, 1],
+  #  [1, 0],
+  #  [1, 0],
+  #  [0, 1]
+  #])
+  T <- rbind(
+    c(0., 1.),
+    c(1., 0.),
+    c(1., 0.),
+    c(0., 1.)
+  )
+  
+  return(list(X=X, T=T))
+}
+
+
+
+
+
+
+
