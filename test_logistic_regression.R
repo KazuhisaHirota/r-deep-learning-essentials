@@ -68,18 +68,15 @@ TestLogisticRegression <- function() {
     }
   }
   
+  classifier = LogisticRegression$new(n.in, n.out)
+  
   print("train")
-  W <- matrix(0, nrow=n.out, ncol=n.in)
-  b <- numeric(n.out)
   for (epoch in 1:epochs) {
     print(paste("epoch: ", as.character(epoch)))
     for (batch in 1:minibatch.N) {
-      result <- TrainLogisticRegression(n.in, n.out, W, b,
-                                        minibatch.train.X[batch,,], # cube
-                                        minibatch.train.T[batch,,], # cube
-                                        minibatch.size, learning.rate)
-      W <- result$W
-      b <- result$b
+      result <- classifier$Train(minibatch.train.X[batch,,], # cube
+                                 minibatch.train.T[batch,,], # cube
+                                 minibatch.size, learning.rate)
     }
     learning.rate <- learning.rate * 0.95
   }
@@ -87,7 +84,7 @@ TestLogisticRegression <- function() {
   print("test")
   predicted.T <- matrix(0, test.N, n.out)
   for (i in 1:test.N) {
-    predicted.T[i,] <- PredictLogisticRegression(n.in, n.out, W, b, test.X[i,])
+    predicted.T[i,] <- classifier$Predict(test.X[i,])
   }
   
   print("evaluate")

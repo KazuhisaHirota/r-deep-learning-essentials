@@ -10,11 +10,7 @@ MultiLayerPerceptrons <- R6Class(
     n.hidden = NULL,
     n.out = NULL,
     hidden.layer = NULL,
-    # TODO
-    logistic.layer.n.in = NULL,
-    logistic.layer.n.out = NULL,
-    logistic.layer.W = NULL,
-    logistic.layer.b = NULL
+    logistic.layer = NULL
   ),
   
   public = list(
@@ -24,16 +20,13 @@ MultiLayerPerceptrons <- R6Class(
       private$n.out <- n.out
       private$hidden.layer <- HiddenLayer$new(n.in, n.hidden,
                                               NULL, NULL, "tanh")
-      # TODO
-      private$logistic.layer.n.in <- n.hidden
-      private$logistic.layer.n.out <- n.out
-      private$logistic.layer.W <- matrix(0, nrow=n.out, ncol=n.hidden)
-      private$logistic.layer.b <- numeric(n.out)
+      private$logistic.layer <- LogisticRegression$new(n.hidden, n.out)
     },
     
     Train = function(X, T, minibatch.size, learning.rate) {
       # outputs of hidden layer (= inputs of output layer)
-      Z = matrix(0, nrow = minibatch.size, ncol = private$n.hidden) # NOTE ncol = self.n_in in the original code is wrong
+      # NOTE ncol = self.n_in in the original code is wrong
+      Z = matrix(0, nrow = minibatch.size, ncol = private$n.hidden)
       
       for (n in 1:minibatch.size) {
         # activate input units
@@ -41,28 +34,17 @@ MultiLayerPerceptrons <- R6Class(
       }
       
       # forward & backward output layer
-      result <- TrainLogisticRegression(private$logistic.layer.n.in,
-                                        private$logistic.layer.n.out,
-                                        private$logistic.layer.W,
-                                        private$logistic.layer.b,
-                                        Z, T, minibatch.size, learning.rate)
-      d.Y <- result$d.Y
-      private$logistic.layer.W <- result$W
-      private$logistic.layer.b <- result$b
+      d.Y <- private$logistic.layer$Train(Z, T, minibatch.size, learning.rate)
       
       # backward hidden layer (backpropagate)
       private$hidden.layer$Backward(X, Z, d.Y, 
-                                    private$logistic.layer.W,
+                                    private$logistic.layer$GetW(),
                                     minibatch.size, learning.rate)
     },
     
     Predict = function(x) {
       z <- private$hidden.layer$Output(x)
-      return(PredictLogisticRegression(private$logistic.layer.n.in,
-                                       private$logistic.layer.n.out,
-                                       private$logistic.layer.W,
-                                       private$logistic.layer.b,
-                                       z))
+      return(private$logistic.layer$Predict(z))
     }
   )
 )
