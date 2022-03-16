@@ -38,9 +38,11 @@ TestPerceptrons <- function() {
   test.x <- test.data$x
   test.t <- test.data$t
   
+  # construct
+  classifier = Perceptrons$new(n.in)
+  
   # train
   print("train")
-  w <- numeric(n.in) # weight vector
   epoch <- 0 # training epoch counter
   while(TRUE) {
     print(paste("epoch: ", as.character(epoch)))
@@ -48,10 +50,9 @@ TestPerceptrons <- function() {
     classified_ <- 0
     for (i in 1:train.n) {
       print(paste("using data train.x[", as.character(i), ",]"))
-      result <- TrainPerceptrons(n.in, w, train.x[i,], # NOTE x[i,]
-                                 train.t[i], learning.rate)
-      w <- result$w
-      classified_ <- classified_ + result$classified
+      classified_ <- classified_ +
+                     classifier$Train(train.x[i,], # NOTE x[i,]
+                                      train.t[i], learning.rate)
     }
     if (classified_ == train.n) { # when all data are classified correctly
       print("all data are classified correctly. break.")
@@ -69,7 +70,7 @@ TestPerceptrons <- function() {
   print("test")
   predicted.t = numeric(test.n) # outputs predicted by the model
   for (i in 1:test.n) {
-    predicted.t[i] <- PredictPerceptrons(n.in, w, test.x[i,]) # NOTE x[i,]
+    predicted.t[i] <- classifier$Predict(test.x[i,]) # NOTE x[i,]
   }
   
   # evaluate the model
